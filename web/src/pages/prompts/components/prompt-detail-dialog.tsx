@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import { Copy, FolderPlus } from "lucide-react";
 import { Button, Modal, Space, Tag } from "antd";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { EditorView } from "@codemirror/view";
 
 import { formatPromptDate, type Prompt } from "@/services/api/prompts";
 import { useThemeStore } from "@/stores/use-theme-store";
@@ -37,7 +35,7 @@ function PromptBody({ prompt, onCopy }: { prompt: string; onCopy: (text: string)
             </div>
             <CodeMirror
                 value={formatted}
-                theme={isDark ? oneDark : undefined}
+                theme={isDark ? "dark" : "light"}
                 editable={false}
                 basicSetup={{ lineNumbers: false, foldGutter: false, highlightActiveLine: false, highlightActiveLineGutter: false }}
                 extensions={[json(), EditorView.lineWrapping]}
