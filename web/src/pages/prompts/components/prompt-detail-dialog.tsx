@@ -3,6 +3,25 @@ import { Button, Modal, Space, Tag } from "antd";
 
 import { formatPromptDate, type Prompt } from "@/services/api/prompts";
 
+function PromptPreview({ preview, coverUrl }: { preview: string; coverUrl: string }) {
+    const imageRegex = /!\[[^\]]*]\(([^)]+)\)/g;
+    const images = Array.from(preview.matchAll(imageRegex), (match) => match[1]).filter((src) => src && src !== coverUrl);
+    const caption = preview.replace(imageRegex, "").trim();
+    if (!images.length && !caption) return null;
+    return (
+        <div className="space-y-3">
+            {images.length ? (
+                <div className="grid grid-cols-2 gap-2">
+                    {images.map((src) => (
+                        <img key={src} src={src} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                    ))}
+                </div>
+            ) : null}
+            {caption ? <pre className="max-h-40 overflow-auto whitespace-pre-wrap rounded-lg bg-stone-100 p-3 text-xs leading-5 text-stone-600 dark:bg-stone-900 dark:text-stone-300">{caption}</pre> : null}
+        </div>
+    );
+}
+
 export function PromptDetailDialog({ prompt, onClose, onCopy, onSaveAsset }: { prompt: Prompt | null; onClose: () => void; onCopy: (prompt: string) => void; onSaveAsset?: (prompt: Prompt) => void }) {
     return (
         <>
@@ -12,7 +31,7 @@ export function PromptDetailDialog({ prompt, onClose, onCopy, onSaveAsset }: { p
                         <div className="grid gap-5 md:grid-cols-[300px_minmax(0,1fr)]">
                             <div className="space-y-3">
                                 <img src={prompt.coverUrl} alt={prompt.title} className="aspect-[4/3] w-full rounded-lg object-cover" />
-                                {prompt.preview ? <pre className="max-h-60 overflow-auto whitespace-pre-wrap rounded-lg bg-stone-100 p-3 text-xs leading-5 text-stone-600 dark:bg-stone-900 dark:text-stone-300">{prompt.preview}</pre> : null}
+                                {prompt.preview ? <PromptPreview preview={prompt.preview} coverUrl={prompt.coverUrl} /> : null}
                             </div>
                             <div className="min-w-0">
                                 <div className="flex flex-wrap gap-1.5">
